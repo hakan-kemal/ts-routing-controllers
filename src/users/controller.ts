@@ -6,7 +6,7 @@ import {
   Put,
   Body,
   Post,
-  HttpCode,
+  //   HttpCode,
   NotFoundError
 } from "routing-controllers";
 // import pagesById from "./entity";
@@ -42,10 +42,17 @@ export default class UserController {
     return User.merge(user, update).save();
   }
 
+  //   @Post("/users")
+  //   @HttpCode(201)
+  //   createUser(@Body() user: User) {
+  //     // console.log(`Incoming POST body param:`, body);
+  //     return user.save();
+  //   }
   @Post("/users")
-  @HttpCode(201)
-  createUser(@Body() user: User) {
-    // console.log(`Incoming POST body param:`, body);
-    return user.save();
+  async createUser(@Body() user: User) {
+    const { password, ...rest } = user;
+    const entity = User.create(rest);
+    await entity.setPassword(password);
+    return entity.save();
   }
 }
